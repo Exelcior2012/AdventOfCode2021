@@ -33,6 +33,7 @@
 
 Debug/*
 Release/*
+Build/*
 .vs/*
 *.filters
 *.user
