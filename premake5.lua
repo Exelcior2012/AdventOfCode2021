@@ -14,7 +14,12 @@ project "AdventOfCode2021"
 
 	rtti "Off"
 	exceptionhandling "Off"
-	warnings "Everything"
+	warnings "High"
+	
+	disablewarnings { 
+		"4100" -- Unreferenced formal parameter, no real downside
+	}
+	
 	flags {"FatalWarnings"}
 	conformancemode "On"
 
@@ -22,6 +27,10 @@ project "AdventOfCode2021"
 		"Include/**.h",
 		"Source/**.h",
 		"Source/**.cpp"
+	}
+	
+	includedirs {
+		"Include"
 	}
 
 	-- Reproduce the file structure inside the solution explorer in visual studio
