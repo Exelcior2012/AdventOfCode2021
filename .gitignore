@@ -31,6 +31,7 @@
 *.out
 *.app
 
+Binaries/*
 Debug/*
 Release/*
 Build/*
