@@ -12,14 +12,14 @@ project "AdventOfCode2021"
 
 	targetdir "Binaries/%{cfg.buildcfg}"
 
-	rtti "Off"
-	exceptionhandling "Off"
+	--rtti "Off"
+	--exceptionhandling "Off"
 	warnings "High"
-	
-	disablewarnings { 
+
+	disablewarnings {
 		"4100" -- Unreferenced formal parameter, no real downside
 	}
-	
+
 	flags {"FatalWarnings"}
 	conformancemode "On"
 
@@ -28,9 +28,10 @@ project "AdventOfCode2021"
 		"Source/**.h",
 		"Source/**.cpp"
 	}
-	
+
 	includedirs {
-		"Include"
+		"Include",
+		"ThirdParty/docopt.cpp"
 	}
 
 	-- Reproduce the file structure inside the solution explorer in visual studio
