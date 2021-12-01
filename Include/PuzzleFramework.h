@@ -6,6 +6,7 @@
 #include <chrono>
 #include <string_view>
 #include <concepts>
+#include <thread>
 
 namespace AoC
 {
@@ -32,10 +33,10 @@ namespace AoC
 	};
 
 	template<CPuzzle Puzzle_t, EPuzzlePart part>
-	typename Puzzle_t::Result_t RunPart(const typename Puzzle_t::Data_t& data, const int32_t numIters)
+	typename Puzzle_t::Result_t RunPart(const typename Puzzle_t::Data_t& data, const int32_t numIters, bool redact)
 	{
 		using namespace std;
-		typename Puzzle_t::Result_t result{};
+		volatile typename Puzzle_t::Result_t result{};
 
 		auto taskStartTime = chrono::steady_clock::now();
 
@@ -57,7 +58,17 @@ namespace AoC
 		auto avgTimeMicroSeconds = chrono::duration_cast<chrono::microseconds>(fullDuration / numIters);
 		
 		cout << "\tSolution: " << static_cast<underlying_type_t<EPuzzlePart>>(part);
-		cout << "\n\t\tOutput: " << result;
+		cout << "\n\t\tOutput: ";
+
+		if(redact)
+		{
+			cout << "-----";
+		}
+		else
+		{
+			cout << result;
+		}
+
 		cout << "\n\t\tTiming: ";
 		
 		if(avgTimeMicroSeconds.count() > 1000)
@@ -75,7 +86,7 @@ namespace AoC
 	}
 
 	template<CPuzzle Puzzle_t>
-	void Run(const int32_t timingIters)
+	void Run(const int32_t timingIters, bool redact)
 	{
 		using namespace std;
 
@@ -103,7 +114,7 @@ namespace AoC
 			cout << avgTime_fp.count() << "us\n\n";
 		}
 
-		RunPart<Puzzle_t, EPuzzlePart::One>(preparedData, timingIters);
-		RunPart<Puzzle_t, EPuzzlePart::Two>(preparedData, timingIters);
+		RunPart<Puzzle_t, EPuzzlePart::One>(preparedData, timingIters, redact);
+		RunPart<Puzzle_t, EPuzzlePart::Two>(preparedData, timingIters, redact);
 	}
 }
