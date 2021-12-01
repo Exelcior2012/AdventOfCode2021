@@ -10,7 +10,7 @@
 namespace AoC
 {
 	template<typename Puzzle_t>
-	concept CPuzzle = requires(Puzzle_t puzzle, const typename Puzzle_t::Data_t& d/*, Puzzle_t::Result_t r*/)
+	concept CPuzzle = requires(Puzzle_t puzzle, const typename Puzzle_t::Data_t& d)
 	{
 		{ Puzzle_t::Setup() } -> std::same_as<typename Puzzle_t::Data_t>;
 		{ Puzzle_t::GetName() } -> std::same_as<std::string_view>;
