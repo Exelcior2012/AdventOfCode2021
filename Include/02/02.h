@@ -6,7 +6,7 @@
 #include <fstream>
 #include <numeric>
 
-struct Day2 : public AoC::PuzzleBase<Day1>
+struct Day2 : public AoC::PuzzleBase<Day2>
 {
 	struct Move
 	{
