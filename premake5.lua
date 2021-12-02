@@ -40,6 +40,11 @@ project "AdventOfCode2021"
 		["*"] = "**.*"
 	}
 
+	postbuildcommands {
+		'echo "Copying input and testcase data to output"',
+		'xcopy /s /y "..\\Include\\*.txt" "%{cfg.buildtarget.directory}\\Data\\"'
+	}
+
 	filter "configurations:Debug"
 	defines { "DEBUG" }
 	symbols "On"
@@ -48,8 +53,3 @@ project "AdventOfCode2021"
 	filter "configurations:Release"
 	defines {"NDEBUG", "RELEASE"}
 	optimize "Speed"
-
-	postbuildcommands {
-		'echo "Copying input and testcase data to output"',
-		'xcopy /s /y "..\\Include\\*.txt" "%{cfg.buildtarget.directory}\\Data\\"'
-	}
