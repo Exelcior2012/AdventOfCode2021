@@ -4,7 +4,6 @@
 #include "PuzzleFramework.h"
 
 #include <fstream>
-#include <numeric>
 
 struct Day2 : public AoC::PuzzleBase<Day2>
 {
