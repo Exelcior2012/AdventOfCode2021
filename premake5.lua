@@ -11,6 +11,7 @@ project "AdventOfCode2021"
 	cppdialect "C++20"
 
 	targetdir "Binaries/%{cfg.buildcfg}"
+	debugdir "Binaries/%{cfg.buildcfg}"
 
 	--rtti "Off"
 	--exceptionhandling "Off"
@@ -47,3 +48,8 @@ project "AdventOfCode2021"
 	filter "configurations:Release"
 	defines {"NDEBUG", "RELEASE"}
 	optimize "Speed"
+
+	postbuildcommands {
+		'echo "Copying input and testcase data to output"',
+		'xcopy /s /y "..\\Include\\*.txt" "%{cfg.buildtarget.directory}\\Data\\"'
+	}

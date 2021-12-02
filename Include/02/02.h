@@ -18,7 +18,7 @@ struct Day2 : public AoC::PuzzleBase<Day2>
 		{
 			return Horizontal * Vertical;
 		}
-
+		
 		void AddSimple(const Move& other)
 		{
 			Horizontal += other.Horizontal;
@@ -70,7 +70,7 @@ struct Day2 : public AoC::PuzzleBase<Day2>
 	{
 		Data data;
 
-		std::ifstream file("../Include/02/input.txt");
+		std::ifstream file("Data/02/input.txt");
 
 		Move temp;
 		while(file.good())

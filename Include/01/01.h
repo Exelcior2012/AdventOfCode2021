@@ -20,7 +20,7 @@ struct Day1 : public AoC::PuzzleBase<Day1>
 	{
 		Data data;
 
-		std::ifstream file("../Include/01/input.txt");
+		std::ifstream file("Data/01/input.txt");
 
 		int temp;
 		while(file.good())
