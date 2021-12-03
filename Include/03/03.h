@@ -95,6 +95,7 @@ struct Day3 : public AoC::PuzzleBase<Day3>
 
 	static Result_t Part2(const Data_t& data)
 	{
+		// builds a histogram of the number of bits set in each bit position for the given data range
 		auto CalculateHistogram = [](auto& container, size_t bitLength, size_t begin, const size_t end)
 		{
 			std::vector<size_t> hist(bitLength, 0);
@@ -114,37 +115,40 @@ struct Day3 : public AoC::PuzzleBase<Day3>
 
 		auto GetValue = [&data, &CalculateHistogram](bool flip)
 		{
+			// need a copy so we can manipulate the list
 			std::vector<uint32_t> valueCopy = data.Values;
+			
 			size_t end = data.Values.size();
 			size_t begin = 0;
 
 			for(size_t i = 0; i < data.NumBits; ++i)
 			{
 				begin = 0;
+
+				// get bit counts for the current list
 				const std::vector<size_t> counts = CalculateHistogram(valueCopy, data.NumBits, begin, end);
 
 				const uint32_t mask = 1 << (data.NumBits - 1 - i);
 				const uint32_t accept = (flip != (counts[i] * 2 >= end)) ? mask : 0;
 
+				// sort the list so 0 -> end after this will be the filtered values we want
 				while(begin < end)
 				{
+					// if we have the correct bit set or unset this value is on the list
 					if((valueCopy[begin] & mask) == accept)
 					{
 						begin++;
 					}
 					else
 					{
+						// otherwise remove it
 						std::swap(valueCopy[begin], valueCopy[end - 1]);
 						--end;
 					}
 				}
-
-				if(end - begin == 1)
-				{
-					break;
-				}
 			}
 
+			// final item is in the first slot
 			return valueCopy[0];
 		};
 
