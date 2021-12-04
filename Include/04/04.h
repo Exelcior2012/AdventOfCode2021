@@ -156,7 +156,7 @@ struct Day4 : public AoC::PuzzleBase<Day4>
 						// and then another in the enclosing while loop - just
 						// jump straight out of the inner branch when we detect
 						// the first win
-						goto LABEL_WON1;
+						goto LABEL_WON;
 
 						break;
 					}
@@ -165,7 +165,7 @@ struct Day4 : public AoC::PuzzleBase<Day4>
 				++curr;
 			}
 		}
-LABEL_WON1:
+LABEL_WON:
 		
 		return GetBoardTotal(data.Boards[winner], states[winner]) * lastCall;
 	}
@@ -228,7 +228,7 @@ LABEL_WON1:
 						// the final win
 						if(end == 0)
 						{
-							goto LABEL_WON2;
+							goto LABEL_WON;
 						}
 
 						// if we're here then there's a win, but it isn't the
@@ -244,7 +244,7 @@ LABEL_WON1:
 				curr++;
 			}
 		}
-LABEL_WON2:
+LABEL_WON:
 
 		return GetBoardTotal(data.Boards[indices[end]], states[end]) * lastCall;
 	}
