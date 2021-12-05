@@ -54,6 +54,7 @@ T Abs(T&& value)
 	return value < 0 ? -value : value;
 }
 
+// Bresenham line algorithm implementation for a grid of small numbers
 void PlotLine(std::vector<uint8_t>& state, int width, const Point& origin, const Line& line)
 {
 	auto [x0, y0] = line.A;
