@@ -56,7 +56,7 @@ struct Day6 : public AoC::PuzzleBase<Day6>
 		{
 			uint64_t temp = fish[0];
 
-			memcpy(&fish[0], &fish[1], sizeof(uint64_t) * 8);
+			std::memmove(&fish[0], &fish[1], sizeof(uint64_t) * 8);
 
 			fish[6] += temp;
 			fish[8] = temp;
