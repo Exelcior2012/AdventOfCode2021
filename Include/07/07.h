@@ -68,9 +68,7 @@ struct Day7 : public AoC::PuzzleBase<Day7>
 
 	static Result_t Part2(const Data_t& data)
 	{
-		int avg = std::accumulate(std::begin(data.Positions), std::end(data.Positions), 0) / data.Positions.size();
-
-		int bestPosition = avg;
+		int bestPosition = std::accumulate(std::begin(data.Positions), std::end(data.Positions), 0) / data.Positions.size();
 
 		int fuelSum = 0;
 		for(int p : data.Positions)
