@@ -101,17 +101,20 @@ namespace AoC
 
 		auto avgPrepTimeMicroSeconds = chrono::duration_cast<chrono::microseconds>(prepareDuration);
 
-		cout << "\tPrepared data in  ";
+		if(!redact)
+		{
+			cout << "\tPrepared data in  ";
 
-		if(avgPrepTimeMicroSeconds.count() > 1000)
-		{
-			auto avgTime_fp = chrono::duration<double, milli>(prepareDuration);
-			cout << avgTime_fp.count() << "ms\n\n";
-		}
-		else
-		{
-			auto avgTime_fp = chrono::duration<double, micro>(prepareDuration);
-			cout << avgTime_fp.count() << "us\n\n";
+			if(avgPrepTimeMicroSeconds.count() > 1000)
+			{
+				auto avgTime_fp = chrono::duration<double, milli>(prepareDuration);
+				cout << avgTime_fp.count() << "ms\n\n";
+			}
+			else
+			{
+				auto avgTime_fp = chrono::duration<double, micro>(prepareDuration);
+				cout << avgTime_fp.count() << "us\n\n";
+			}
 		}
 
 		RunPart<Puzzle_t, EPuzzlePart::One>(preparedData, timingIters, redact);

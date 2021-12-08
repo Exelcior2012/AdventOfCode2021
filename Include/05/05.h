@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "Util.h"
 #include "PuzzleFramework.h"
 
 #include <fstream>
@@ -48,12 +49,6 @@ struct Line
 	}
 };
 
-template<typename T>
-T Abs(T&& value)
-{
-	return value < 0 ? -value : value;
-}
-
 // Bresenham line algorithm implementation for a grid of small numbers
 void PlotLine(std::vector<uint8_t>& state, int width, const Point& origin, const Line& line)
 {
@@ -66,9 +61,9 @@ void PlotLine(std::vector<uint8_t>& state, int width, const Point& origin, const
 	y0 -= origin.Y;
 	y1 -= origin.Y;
 
-	const int dx = Abs(x1 - x0);
+	const int dx = Util::Abs(x1 - x0);
 	const int signx = x0 < x1 ? 1 : -1;
-	const int dy = -Abs(y1 - y0);
+	const int dy = -Util::Abs(y1 - y0);
 	const int signy = y0 < y1 ? 1 : -1;
 	
 	int error = dx + dy;

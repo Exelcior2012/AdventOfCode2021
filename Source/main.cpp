@@ -11,6 +11,7 @@
 #include "04/04.h"
 #include "05/05.h"
 #include "06/06.h"
+#include "07/07.h"
 
 static std::map<std::string, docopt::value> GArgs;
 
@@ -47,12 +48,13 @@ int main(int ArgCount, char** Args)
 {
 	GArgs = docopt::docopt(usage, {Args + 1, Args + ArgCount}, true, "AoC2021");
 
-	ConditionalRunPuzzle<Day1>();
-	ConditionalRunPuzzle<Day2>();
-	ConditionalRunPuzzle<Day3>();
-	ConditionalRunPuzzle<Day4>();
-	ConditionalRunPuzzle<Day5>();
-	ConditionalRunPuzzle<Day6>();
+	//ConditionalRunPuzzle<Day1>();
+	//ConditionalRunPuzzle<Day2>();
+	//ConditionalRunPuzzle<Day3>();
+	//ConditionalRunPuzzle<Day4>();
+	//ConditionalRunPuzzle<Day5>();
+	//ConditionalRunPuzzle<Day6>();
+	ConditionalRunPuzzle<Day7>();
 
 	return 0;
 }
