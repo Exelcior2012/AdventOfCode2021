@@ -33,9 +33,20 @@ namespace Util
 		return count;
 	}
 
-	void Log(const std::string& toLog)
+	void LogStr(const std::string& toLog)
 	{
 		OutputDebugStringA(toLog.c_str());
 		std::cout << toLog << "\n";
+	}
+
+	template<typename... Args>
+	void Log(Args... args)
+	{
+		std::stringstream ss;
+
+		(ss << ... << args);
+		ss << '\n';
+
+		LogStr(ss.str());
 	}
 }
