@@ -155,15 +155,10 @@ struct Day11 : public AoC::PuzzleBase<Day11>
 
 	static int64_t FirstSync(Data::OctoGrid& grid)
 	{
-		int64_t count = 0;
-		for(;;)
+		int64_t count = 1;
+		while(Tick(grid) != grid.Values.size())
 		{
 			++count;
-			int64_t num = Tick(grid);
-			if(num == grid.Values.size())
-			{
-				break;
-			}
 		}
 		return count;
 	}
