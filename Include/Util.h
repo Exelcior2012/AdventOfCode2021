@@ -36,7 +36,7 @@ namespace Util
 	void LogStr(const std::string& toLog)
 	{
 		OutputDebugStringA(toLog.c_str());
-		std::cout << toLog << "\n";
+		std::cout << toLog;
 	}
 
 	template<typename... Args>
@@ -45,7 +45,7 @@ namespace Util
 		std::stringstream ss;
 
 		(ss << ... << args);
-		ss << '\n';
+		ss << "\n";
 
 		LogStr(ss.str());
 	}
