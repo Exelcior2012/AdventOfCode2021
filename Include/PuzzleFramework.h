@@ -6,17 +6,27 @@
 #include <chrono>
 #include <string_view>
 #include <concepts>
+#include <type_traits>
 #include <thread>
 
 namespace AoC
 {
+	template<typename Callable, typename... Args>
+	using TReturnType = std::invoke_result_t<Callable&&, Args&&...>;
+
 	template<typename Puzzle_t>
-	concept CPuzzle = requires(Puzzle_t puzzle, const typename Puzzle_t::Data_t& d)
+	using TPuzzleData = TReturnType<decltype(&Puzzle_t::Setup)>;
+
+	template<typename Puzzle_t>
+	using TPuzzleResult = TReturnType<decltype(&Puzzle_t::Part1), TPuzzleData<Puzzle_t>&>;
+
+	template<typename Puzzle_t>
+	concept CPuzzle = requires(Puzzle_t puzzle, const TPuzzleData<Puzzle_t>& d)
 	{
-		{ Puzzle_t::Setup() } -> std::same_as<typename Puzzle_t::Data_t>;
+		{ Puzzle_t::Setup() } -> std::same_as<TPuzzleData<Puzzle_t>>;
 		{ Puzzle_t::GetName() } -> std::same_as<std::string_view>;
-		{ Puzzle_t::Part1(d) } -> std::same_as<typename Puzzle_t::Result_t>;
-		{ Puzzle_t::Part2(d) } -> std::same_as<typename Puzzle_t::Result_t>;
+		{ Puzzle_t::Part1(d) } -> std::same_as<TPuzzleResult<Puzzle_t>>;
+		{ Puzzle_t::Part2(d) } -> std::same_as<TPuzzleResult<Puzzle_t>>;
 	};
 
 	// Helper CRTP struct to enforce CPuzzle constraints on a class if inherited
@@ -33,10 +43,10 @@ namespace AoC
 	};
 
 	template<CPuzzle Puzzle_t, EPuzzlePart part>
-	typename Puzzle_t::Result_t RunPart(const typename Puzzle_t::Data_t& data, const int32_t numIters, bool redact)
+	TPuzzleResult<Puzzle_t> RunPart(const TPuzzleData<Puzzle_t>& data, const int32_t numIters, bool redact)
 	{
 		using namespace std;
-		volatile typename Puzzle_t::Result_t result{};
+		volatile TPuzzleResult<Puzzle_t> result{};
 
 		auto taskStartTime = chrono::steady_clock::now();
 
@@ -94,7 +104,7 @@ namespace AoC
 
 		auto prepareStartTime = chrono::steady_clock::now();
 		
-		typename Puzzle_t::Data_t preparedData = Puzzle_t::Setup();
+		TPuzzleData<Puzzle_t> preparedData = Puzzle_t::Setup();
 		
 		auto prepareEndTime = chrono::steady_clock::now();
 		auto prepareDuration = (prepareEndTime - prepareStartTime);
