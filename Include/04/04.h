@@ -136,7 +136,7 @@ struct Day4 : public AoC::PuzzleBase<Day4>
 		
 		int winner = -1;
 		uint8_t lastCall = 0;
-		const int numToCall = data.Numbers.size();
+		const int numToCall = static_cast<int>(data.Numbers.size());
 		for(int i = 4; i < numToCall; ++i)
 		{
 			lastCall = data.Numbers[i];
@@ -150,7 +150,7 @@ struct Day4 : public AoC::PuzzleBase<Day4>
 				{
 					if((state & BingoLUT[j]) == BingoLUT[j])
 					{
-						winner = curr;
+						winner = static_cast<int>(curr);
 
 						// To avoid an extra branch in the enclosing for loop, 
 						// and then another in the enclosing while loop - just
@@ -206,7 +206,7 @@ LABEL_WON:
 		CallNumber(data.Numbers[3], end);
 
 		uint8_t lastCall = 0;
-		const int numToCall = data.Numbers.size();
+		const int numToCall = static_cast<int>(data.Numbers.size());
 		for(int i = 4; i < numToCall; ++i)
 		{
 			lastCall = data.Numbers[i];

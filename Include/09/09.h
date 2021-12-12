@@ -85,7 +85,7 @@ struct Day9 : public AoC::PuzzleBase<Day9>
 			{
 				std::getline(in, temp);
 
-				if(out.Width == 0) out.Width = temp.length();
+				if(out.Width == 0) out.Width = static_cast<int>(temp.length());
 				++out.Height;
 				
 				out.Values.reserve(out.Values.size() + out.Width);
@@ -171,7 +171,7 @@ struct Day9 : public AoC::PuzzleBase<Day9>
 				}
 			}
 
-			return basin.size();
+			return static_cast<int>(basin.size());
 		};
 
 		std::vector<int> basinSizes;

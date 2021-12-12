@@ -27,7 +27,7 @@ struct Day11 : public AoC::PuzzleBase<Day11>
 			{
 				std::getline(in, temp);
 
-				if(out.grid.Width == 0) out.grid.Width = temp.length();
+				if(out.grid.Width == 0) out.grid.Width = static_cast<int>(temp.length());
 				++out.grid.Height;
 
 				out.grid.Values.reserve(out.grid.Values.size() + out.grid.Width);
@@ -66,7 +66,7 @@ struct Day11 : public AoC::PuzzleBase<Day11>
 	}
 
 	template<typename Callable>
-	static void ForEachNeighbor(Data::OctoGrid& grid, size_t origin, Callable c)
+	static void ForEachNeighbor(Data::OctoGrid& grid, int origin, Callable c)
 	{
 		auto DoInvoke = [&](int index, auto callable)
 		{
@@ -121,7 +121,7 @@ struct Day11 : public AoC::PuzzleBase<Day11>
 			toFlashStack.pop_back();
 			numFlashes++;
 
-			ForEachNeighbor(grid, index, [&](int innerIndex)
+			ForEachNeighbor(grid, static_cast<int>(index), [&](int innerIndex)
 			{
 				// First time we go over 9, only one flash per tick per octopus
 				if(++grid.Values[innerIndex] == 10)
@@ -156,7 +156,7 @@ struct Day11 : public AoC::PuzzleBase<Day11>
 	static int64_t FirstSync(Data::OctoGrid& grid)
 	{
 		int64_t count = 1;
-		while(Tick(grid) != grid.Values.size())
+		while(Tick(grid) != static_cast<int64_t>(grid.Values.size()))
 		{
 			++count;
 		}

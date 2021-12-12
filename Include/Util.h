@@ -4,9 +4,13 @@
 #include <string>
 #include <iostream>
 
-#define _X86_
+//#define _X86_
+//#define _AMD64_
+//#define NOMINMAX
+//#include <debugapi.h>
+
 #define NOMINMAX
-#include <debugapi.h>
+#include <Windows.h>
 
 namespace Util
 {
