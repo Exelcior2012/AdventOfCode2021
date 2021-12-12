@@ -12,6 +12,17 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 
 	struct Data
 	{
+		struct Node;
+		struct NodeLink
+		{
+			NodeLink(Node* inNode)
+				: Link(inNode)
+			{}
+
+			Node* Link;
+			uint8_t Value = 1;
+		};
+
 		struct Node
 		{
 			Node(std::string_view inName)
@@ -19,7 +30,7 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 			{}
 
 			std::string Name;
-			std::vector<Node*> Links;
+			std::vector<NodeLink> Links;
 			uint32_t Id;
 			bool IsSmall:1;
 		};
@@ -27,8 +38,7 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 		std::vector<Node> Nodes;
 		Node* StartNode;
 		Node* EndNode;
-		std::unordered_map<std::string_view, Node*> NameToNodeMap;
-
+		
 		friend std::istream& operator>>(std::istream& in, Data& out)
 		{
 			using namespace std;
@@ -36,6 +46,9 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 			string firstNode;
 			string secondNode;
 			vector<tuple<string, string>> intermediate;
+			unordered_map<string_view, Node*> nameToNodeMap;
+			
+			// First just get all the nodes
 			while(in.good())
 			{
  				getline(in, firstNode, '-');
@@ -69,25 +82,62 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 				intermediate.emplace_back(make_tuple(firstNode, secondNode));
 			}
 
+			// Set IDs and map names
 			int count = 0;
 			for(Node& n : out.Nodes)
 			{
-				out.NameToNodeMap[{n.Name.data(), n.Name.size()}] = &n;
+				nameToNodeMap[{n.Name.data(), n.Name.size()}] = &n;
 				n.Id = count++;
 			}
 
+			// Add input links
 			for(const auto& link : intermediate)
 			{
-				Node* first = out.NameToNodeMap[get<0>(link)];
-				Node* second = out.NameToNodeMap[get<1>(link)];
-				first->Links.push_back(second);
-				second->Links.push_back(first);
+				Node* first = nameToNodeMap[get<0>(link)];
+				Node* second = nameToNodeMap[get<1>(link)];
 
-				if(first->Name == "start") out.StartNode = first;
-				if(first->Name == "end") out.EndNode = first;
-				if(second->Name == "start") out.StartNode = second;
-				if(second->Name == "end") out.EndNode = second;
+				first->Links.emplace_back(second);
+				second->Links.emplace_back(first);
 			}
+
+			// Here we remove all large caves, and adding links out from each
+			// small cave to all other links of the large cave to compact the graph
+			for(Node& node : out.Nodes)
+			{
+				for(int i = 0; i < (int)node.Links.size(); ++i)
+				{
+					Node* outerLink = node.Links[i].Link;
+					if(!outerLink->IsSmall)
+					{
+						// Swap the large cave link to the end and remove it
+						std::swap(node.Links[i], node.Links.back());
+						--i; // removed one, need to account for on next loop
+						node.Links.pop_back();
+
+						for(NodeLink& ln : outerLink->Links)
+						{
+							auto it = find_if(begin(node.Links), end(node.Links), [&ln](const NodeLink& findLink) { return findLink.Link == ln.Link; });
+
+							// If we have a duplicate link - just increase the value.
+							// this will be used later to reduce the number of paths
+							// through the graph
+							if(it != end(node.Links))
+							{
+								(*it).Value++;
+							}
+							else if(ln.Link->Name != "start")
+							{
+								// Unique link, add it to the list
+								node.Links.emplace_back(ln.Link);
+							}
+						}
+					}
+				}
+			}
+
+			// Get the start and end nodes
+			out.StartNode = nameToNodeMap["start"];
+			out.EndNode = nameToNodeMap["end"];
 
 			return in;
 		}
@@ -113,76 +163,77 @@ struct Day12 : public AoC::PuzzleBase<Day12>
 		return "Day 12: Passage Pathing";
 	}
 
-	template<int SmallVisitCount = 1, typename Visitor>
-	static void VisitPaths(const Data::Node* start, const Data::Node* end, bool& blocked, std::vector<int>& visitList, const Visitor& v)
+	template<bool allowMultiple = false>
+	static void CountPaths(const Data::Node* start, const Data::Node* end, bool& blockMultiple, int32_t& numPaths, std::vector<int>& visitList, int32_t value = 1)
 	{
-		// If we need to stop visiting this node, flag it
-		if(start->IsSmall)
+		// Mark this node
+		++visitList[start->Id];
+		
+		if constexpr(allowMultiple)
 		{
-			++visitList[start->Id];
-			
-			// if we hit the small limit, allow no further multi-visits
-			if(visitList[start->Id] == SmallVisitCount)
+			// If we hit this node more than once, stop further multi-visits
+			if(visitList[start->Id] == 2)
 			{
-				blocked = true;
+				blockMultiple = true;
 			}
 		}
 
 		if(start == end)
 		{
-			// At the end, call the visitor
-			v();
+			numPaths += value;
 		}
 		else
 		{
-			for(const Data::Node* adj : start->Links)
+			for(const Data::NodeLink& adj : start->Links)
 			{
-				const int visits = visitList[adj->Id];
+				const int visits = visitList[adj.Link->Id];
 				// If we've visited the path, don't proceed - unless we're allowing
 				// nodes to have more than one visit and we're not blocking multi-visits
-				if(visits == 0 || (visits < SmallVisitCount && !blocked))
+				if(visits == 0 || (visits == 1 && !blockMultiple))
 				{
-					VisitPaths<SmallVisitCount>(adj, end, blocked, visitList, v);
+					// Note adj.Value * value, this cuts down on the paths we need to account for
+					// as we can just add that to the path number once we hit the end.
+					CountPaths<allowMultiple>(adj.Link, end, blockMultiple, numPaths, visitList, adj.Value * value);
 				}
 			}
 		}
 
 		// Other paths can proceed through this node again.
-		if(start->IsSmall)
+		// Release the block flag so multi-visits can happen on later paths
+		if constexpr(allowMultiple)
 		{
-			// Release the block flag so multi-visits can happen on later paths
-			if(visitList[start->Id] == SmallVisitCount)
+			if(visitList[start->Id] == 2)
 			{
-				blocked = false;
+				blockMultiple = false;
 			}
-
-			--visitList[start->Id];
 		}
+
+		--visitList[start->Id];
 	}
 
 	static int64_t Part1(const Data& data)
 	{
-		int pathCount = 0;
+		int32_t pathCount = 0;
 		std::vector<int> visitList(data.Nodes.size(), 0);
 
 		// No multi-visits
 		bool blocked = true;
 
-		VisitPaths(data.StartNode, data.EndNode, blocked, visitList, [&pathCount]() { pathCount++; });
+		CountPaths(data.StartNode, data.EndNode, blocked, pathCount, visitList);
 
 		return pathCount;
 	}
 
 	static int64_t Part2(const Data& data)
 	{
-		int pathCount = 0;
+		int32_t pathCount = 0;
 		bool blocked = false;
 		std::vector<int> visitList(data.Nodes.size(), 0);
 
 		// Make sure we never attempt to go into the start node after the first call
 		visitList[data.StartNode->Id] = 2;
 		
-		VisitPaths<2>(data.StartNode, data.EndNode, blocked, visitList, [&pathCount]() {pathCount++; });
+		CountPaths<true>(data.StartNode, data.EndNode, blocked, pathCount, visitList);
 
 		return pathCount;
 	}
