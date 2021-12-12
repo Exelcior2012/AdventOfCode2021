@@ -16,6 +16,7 @@
 #include "09/09.h"
 #include "10/10.h"
 #include "11/11.h"
+#include "12/12.h"
 
 static std::map<std::string, docopt::value> GArgs;
 
@@ -63,6 +64,7 @@ int main(int ArgCount, char** Args)
 	ConditionalRunPuzzle<Day9>();
 	ConditionalRunPuzzle<Day10>();
 	ConditionalRunPuzzle<Day11>();
+	ConditionalRunPuzzle<Day12>();
 
 	return 0;
 }

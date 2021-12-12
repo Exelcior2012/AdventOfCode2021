@@ -39,13 +39,17 @@ namespace Util
 		std::cout << toLog;
 	}
 
-	template<typename... Args>
+	template<bool WithNewLine = true, typename... Args>
 	void Log(Args... args)
 	{
 		std::stringstream ss;
 
 		(ss << ... << args);
-		ss << "\n";
+
+		if constexpr(WithNewLine)
+		{
+			ss << "\n";
+		}
 
 		LogStr(ss.str());
 	}
