@@ -43,14 +43,15 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 			string temp;
 			char discard;
 			
-			// First just get all the nodes
 			while(in.good())
 			{
  				getline(in, line);
 				stringstream ss(line);
 
+				// Skip empty lines
 				if(line == "") continue;
 
+				// If theres a comma then it's a point
 				if(line.find(',') != std::string::npos)
 				{
 					Point newPoint;
@@ -62,6 +63,7 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 				}
 				else
 				{
+					// Otherwise a fold
 					Point newFold;
 					ss >> temp >> temp >> discard;
 					
@@ -126,6 +128,7 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 
 	static void DoFold(std::vector<Data::Point>& points, const Data::Point& fold)
 	{
+		// Reflect all points above the fold in the correct direction
 		if(fold.X > 0)
 		{
 			for(Data::Point& p : points)
@@ -155,6 +158,7 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 
 		std::vector<Data::Point> copy = data.Points;
 		
+		// Only care about the first fold for part 1
 		const Data::Point& fold = data.Folds[0];
 
 		DoFold(copy, fold);
@@ -168,12 +172,15 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 			height = fold.Y;
 		}
 
+		// sort/unique will give us a subset that contains only unique elements
 		std::sort(std::begin(copy), std::end(copy));
 		auto newEnd = std::unique(std::begin(copy), std::end(copy));
 
+		// Return length of the unique set
 		return std::distance(std::begin(copy), newEnd);
 	}
 
+	// Need a >> operator to print out the board, so wrap in a type to handle that
 	struct BoardResult
 	{
 		std::vector<Data::Point> Points;
@@ -215,6 +222,7 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 
 		std::vector<Data::Point> copy = data.Points;
 
+		// Do all folds this time
 		for(const Data::Point& fold : data.Folds)
 		{
 			DoFold(copy, fold);
@@ -229,6 +237,7 @@ struct Day13 : public AoC::PuzzleBase<Day13>
 			}
 		}
 
+		// Build result
 		BoardResult r;
 		r.Points = std::move(copy);
 		r.Width = width;
