@@ -18,15 +18,18 @@ namespace AoC
 	using TPuzzleData = TReturnType<decltype(&Puzzle_t::Setup)>;
 
 	template<typename Puzzle_t>
-	using TPuzzleResult = TReturnType<decltype(&Puzzle_t::Part1), TPuzzleData<Puzzle_t>&>;
+	using TPuzzleResult1 = TReturnType<decltype(&Puzzle_t::Part1), TPuzzleData<Puzzle_t>&>;
+
+	template<typename Puzzle_t>
+	using TPuzzleResult2 = TReturnType<decltype(&Puzzle_t::Part2), TPuzzleData<Puzzle_t>&>;
 
 	template<typename Puzzle_t>
 	concept CPuzzle = requires(Puzzle_t puzzle, const TPuzzleData<Puzzle_t>& d)
 	{
 		{ Puzzle_t::Setup() } -> std::same_as<TPuzzleData<Puzzle_t>>;
 		{ Puzzle_t::GetName() } -> std::same_as<std::string_view>;
-		{ Puzzle_t::Part1(d) } -> std::same_as<TPuzzleResult<Puzzle_t>>;
-		{ Puzzle_t::Part2(d) } -> std::same_as<TPuzzleResult<Puzzle_t>>;
+		{ Puzzle_t::Part1(d) } -> std::same_as<TPuzzleResult1<Puzzle_t>>;
+		{ Puzzle_t::Part2(d) } -> std::same_as<TPuzzleResult2<Puzzle_t>>;
 	};
 
 	// Helper CRTP struct to enforce CPuzzle constraints on a class if inherited
@@ -43,10 +46,12 @@ namespace AoC
 	};
 
 	template<CPuzzle Puzzle_t, EPuzzlePart part>
-	TPuzzleResult<Puzzle_t> RunPart(const TPuzzleData<Puzzle_t>& data, const int32_t numIters, bool redact)
+	void RunPart(const TPuzzleData<Puzzle_t>& data, const int32_t numIters, bool redact)
 	{
 		using namespace std;
-		volatile TPuzzleResult<Puzzle_t> result{};
+		TPuzzleResult1<Puzzle_t> result1{};
+		TPuzzleResult2<Puzzle_t> result2{};
+		volatile int loopEnsure = 0;;
 
 		auto taskStartTime = chrono::steady_clock::now();
 
@@ -54,11 +59,13 @@ namespace AoC
 		{
 			if constexpr(part == EPuzzlePart::One)
 			{
-				result = Puzzle_t::Part1(data);
+				++loopEnsure;
+				result1 = Puzzle_t::Part1(data);
 			}
 			else
 			{
-				result = Puzzle_t::Part2(data);
+				++loopEnsure;
+				result2 = Puzzle_t::Part2(data);
 			}
 		}
 		
@@ -76,7 +83,14 @@ namespace AoC
 		}
 		else
 		{
-			cout << result;
+			if constexpr(part == EPuzzlePart::One)
+			{
+				cout << result1;
+			}
+			else
+			{
+				cout << result2;
+			}
 		}
 
 		cout << "\n\t\tTiming: ";
@@ -91,8 +105,6 @@ namespace AoC
 			auto avgTime_fp = chrono::template duration<double, micro>(fullDuration / numIters);
 			cout << avgTime_fp.count() << "us\n\n";
 		}
-
-		return result;
 	}
 
 	template<CPuzzle Puzzle_t>
