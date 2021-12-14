@@ -18,6 +18,7 @@
 #include "11/11.h"
 #include "12/12.h"
 #include "13/13.h"
+#include "14/14.h"
 
 static std::map<std::string, docopt::value> GArgs;
 
@@ -54,19 +55,20 @@ int main(int ArgCount, char** Args)
 {
 	GArgs = docopt::docopt(usage, {Args + 1, Args + ArgCount}, true, "AoC2021");
 
-	ConditionalRunPuzzle<Day1>();
-	ConditionalRunPuzzle<Day2>();
-	ConditionalRunPuzzle<Day3>();
-	ConditionalRunPuzzle<Day4>();
-	ConditionalRunPuzzle<Day5>();
-	ConditionalRunPuzzle<Day6>();
-	ConditionalRunPuzzle<Day7>();
-	ConditionalRunPuzzle<Day8>();
-	ConditionalRunPuzzle<Day9>();
-	ConditionalRunPuzzle<Day10>();
-	ConditionalRunPuzzle<Day11>();
-	ConditionalRunPuzzle<Day12>();
-	ConditionalRunPuzzle<Day13>();
+	//ConditionalRunPuzzle<Day1>();
+	//ConditionalRunPuzzle<Day2>();
+	//ConditionalRunPuzzle<Day3>();
+	//ConditionalRunPuzzle<Day4>();
+	//ConditionalRunPuzzle<Day5>();
+	//ConditionalRunPuzzle<Day6>();
+	//ConditionalRunPuzzle<Day7>();
+	//ConditionalRunPuzzle<Day8>();
+	//ConditionalRunPuzzle<Day9>();
+	//ConditionalRunPuzzle<Day10>();
+	//ConditionalRunPuzzle<Day11>();
+	//ConditionalRunPuzzle<Day12>();
+	//ConditionalRunPuzzle<Day13>();
+	ConditionalRunPuzzle<Day14>();
 
 	return 0;
 }
