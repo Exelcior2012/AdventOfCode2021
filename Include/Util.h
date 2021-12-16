@@ -75,4 +75,18 @@ namespace Util
 
 		return hash;
 	}
+
+	template<size_t numBits>
+	struct BitStorageBase{};
+	template <> struct BitStorageBase<1> { using type = uint8_t; };
+	template <> struct BitStorageBase<2> { using type = uint8_t; };
+	template <> struct BitStorageBase<4> { using type = uint8_t; };
+	template <> struct BitStorageBase<8> { using type = uint8_t; };
+	template <> struct BitStorageBase<16> { using type = uint16_t; };
+	template <> struct BitStorageBase<32> { using type = uint32_t; };
+	template <> struct BitStorageBase<64> { using type = uint64_t; };
+
+	template<size_t numBits>
+	struct BitStorage : public BitStorageBase<std::bit_ceil(numBits)> {};
+
 }
