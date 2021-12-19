@@ -21,6 +21,8 @@
 #include "14/14.h"
 #include "15/15.h"
 #include "16/16.h"
+#include "17/17.h"
+#include "18/18.h"
 
 static std::map<std::string, docopt::value> GArgs;
 
@@ -57,22 +59,24 @@ int main(int ArgCount, char** Args)
 {
 	GArgs = docopt::docopt(usage, {Args + 1, Args + ArgCount}, true, "AoC2021");
 
-	ConditionalRunPuzzle<Day1>();
-	ConditionalRunPuzzle<Day2>();
-	ConditionalRunPuzzle<Day3>();
-	ConditionalRunPuzzle<Day4>();
-	ConditionalRunPuzzle<Day5>();
-	ConditionalRunPuzzle<Day6>();
-	ConditionalRunPuzzle<Day7>();
-	ConditionalRunPuzzle<Day8>();
-	ConditionalRunPuzzle<Day9>();
-	ConditionalRunPuzzle<Day10>();
-	ConditionalRunPuzzle<Day11>();
-	ConditionalRunPuzzle<Day12>();
-	ConditionalRunPuzzle<Day13>();
-	ConditionalRunPuzzle<Day14>();
-	ConditionalRunPuzzle<Day15>();
-	ConditionalRunPuzzle<Day16>();
+	//ConditionalRunPuzzle<Day1>();
+	//ConditionalRunPuzzle<Day2>();
+	//ConditionalRunPuzzle<Day3>();
+	//ConditionalRunPuzzle<Day4>();
+	//ConditionalRunPuzzle<Day5>();
+	//ConditionalRunPuzzle<Day6>();
+	//ConditionalRunPuzzle<Day7>();
+	//ConditionalRunPuzzle<Day8>();
+	//ConditionalRunPuzzle<Day9>();
+	//ConditionalRunPuzzle<Day10>();
+	//ConditionalRunPuzzle<Day11>();
+	//ConditionalRunPuzzle<Day12>();
+	//ConditionalRunPuzzle<Day13>();
+	//ConditionalRunPuzzle<Day14>();
+	//ConditionalRunPuzzle<Day15>();
+	//ConditionalRunPuzzle<Day16>();
+	//ConditionalRunPuzzle<Day17>();
+	ConditionalRunPuzzle<Day18>();
 
 	return 0;
 }

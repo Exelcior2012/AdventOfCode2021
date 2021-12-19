@@ -136,6 +136,7 @@ struct Day17 : public AoC::PuzzleBase<Day17>
 					y += yVel;
 					--yVel;
 					xVel = std::max(0, xVel - 1);
+
 				}
 			}
 		}
