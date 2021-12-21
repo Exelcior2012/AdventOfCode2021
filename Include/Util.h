@@ -58,6 +58,13 @@ namespace Util
 		LogStr(ss.str());
 	}
 
+	template<typename T>
+	T WrapRange(T min, T max, T value)
+	{
+		static_assert(std::is_integral_v<T>);
+		return min + (value - min) % (max + 1 - min);
+	}
+
 	// 64-bit FNV-1a hash for bytes
 	// see: https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 	uint64_t Fnv1aHash(uint8_t* data, size_t size)
