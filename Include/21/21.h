@@ -17,12 +17,20 @@
 static const int Rolls3_reduce[] = {3, 4, 5, 6, 7, 8, 9};
 static const int Rolls3_occurs[] = {1, 3, 6, 7, 6, 3, 1};
 
+struct Result
+{
+	int64_t Player1Wins;
+	int64_t Player2Wins;
+};
+
+static Result memoFlat[10][10][22][22];
+
 struct Day21 : public AoC::PuzzleBase<Day21>
 {
 	struct Data
 	{
 		int StartLocations[2] = {0, 0};
-
+		
 		friend std::istream& operator>>(std::istream& in, Data& out)
 		{
 			using namespace std;
@@ -110,17 +118,6 @@ struct Day21 : public AoC::PuzzleBase<Day21>
 		return scores[loser] * rolls;
 	}
 
-	struct Result
-	{
-		int64_t Player1Wins;
-		int64_t Player2Wins;
-
-		void Swap()
-		{
-			std::swap(Player1Wins, Player2Wins);
-		}
-	};
-
 	using Cache_t = std::map<std::tuple<int, int, int, int>, Result>;
 
 	// Recursively calculates the quantum game variant results with memoization to reduce computation
@@ -169,12 +166,57 @@ struct Day21 : public AoC::PuzzleBase<Day21>
 		memo[state] = {wins0, wins1};
 		return {wins0, wins1};
 	}
+
+	static Result QuantumPlay_Flat(int pos0, int pos1, int score0, int score1)
+	{
+		Result foundIt = memoFlat[pos0 - 1][pos1 - 1][score0][score1];
+
+		if(foundIt.Player1Wins != -1)
+		{
+			return foundIt;
+		}
+
+		// Base cases, if either score is a winner, return a win for that side
+		if(score0 >= 21)
+		{
+			return {1, 0};
+		}
+
+		if(score1 >= 21)
+		{
+			return {0, 1};
+		}
+
+		int64_t wins0 = 0;
+		int64_t wins1 = 0;
+
+		// Process each possible result, branching off all other games of this roll
+		int count = 0;
+		for(int roll : Rolls3_reduce)
+		{
+			int occurances = Rolls3_occurs[count++];
+			int newPosition = Util::WrapRange(1, 10, pos0 + roll);
+			int newScore = score0 + newPosition;
+
+			// Note swapped params, other player is playing the next turn
+			Result subResult = QuantumPlay_Flat(pos1, newPosition, score1, newScore);
+
+			// make sure to multiply by occurances of this result as we aren't 
+			// considering every possible combination
+			wins0 += subResult.Player2Wins * occurances;
+			wins1 += subResult.Player1Wins * occurances;
+		}
+
+		// Cache our result
+		memoFlat[pos0 - 1][pos1 - 1][score0][score1] = {wins0, wins1};
+		return {wins0, wins1};
+	}
 	
 	static int64_t Part2(const Data& data)
 	{
-		Cache_t cache;
-		Result gameResult = QuantumPlay(data.StartLocations[0], data.StartLocations[1], 0, 0, cache);
-		return std::max(gameResult.Player1Wins, gameResult.Player2Wins);
+		std::memset(memoFlat, -1, sizeof(memoFlat));
+		Result flatResult = QuantumPlay_Flat(data.StartLocations[0], data.StartLocations[1], 0, 0);
+		return std::max(flatResult.Player1Wins, flatResult.Player2Wins);
 	}
 };
 
